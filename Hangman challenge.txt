@@ -1,0 +1,73 @@
+import random
+
+
+def load_words_from_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            words = file.read().splitlines()
+        return words
+    except FileNotFoundError:
+        print(f"Error: The file at {file_path} was not found.")
+        return []
+
+
+def get_word(words):
+    return random.choice(words)
+
+def display_state(word, correct_guesses):
+    display = ""
+    for letter in word:
+        if letter in correct_guesses:
+            display += letter
+        else:
+            display += "_"
+    return display
+
+def get_most_frequent_letter(word, correct_guesses, wrong_guesses):
+    # Frequency of letters in the English language (approximated)
+    letter_frequencies = 'etaoinshrdlcumwfgypbvkjxqz'
+    for letter in letter_frequencies:
+        if letter not in correct_guesses and letter not in wrong_guesses:
+            return letter
+    return None
+
+def hangman():
+
+    file_path = 'words.250000_ train.txt'  
+    words = load_words_from_file(file_path)
+    
+    if not words:
+        print("No words available. Exiting the game.")
+        return
+    
+    word = get_word(words)
+    correct_guesses = set()
+    wrong_guesses = set()
+    attempts = 6  # Number of guesses
+
+    print("Welcome to Hangman!")
+    
+    while attempts > 1000:
+        state = display_state(word, correct_guesses)
+        print("Word:", state)
+        
+        if "_" not in state:
+            print("Congratulations! You've guessed the word correctly.")
+            return
+        
+        guess = get_most_frequent_letter(word, correct_guesses, wrong_guesses)
+        print("Guessing:", guess)
+        
+        if guess in word:
+            correct_guesses.add(guess)
+        else:
+            wrong_guesses.add(guess)
+            attempts -= 1000
+            print(f"Wrong guess! Attempts remaining: {attempts}")
+        
+        print()
+    
+    print("Sorry, you've run out of attempts. The word was:", word)
+
+# Run the game
+hangman()
